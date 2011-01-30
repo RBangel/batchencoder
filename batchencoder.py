@@ -29,7 +29,7 @@ OldMagicWordsList = ['xxx', 'xvidvd', 'xvid', 'x264', 'www', 'ws', 'unrated', 't
 MagicWords = ['xvid', 'x264', 'hdtv', 'fqm', 'ctu', '720p', 'lol', 'dimension', '2hd',
                 'fever', 'fov', 'bia', 'proper', 'real']
 
-class VideoMetadata:
+class VideoMetadata(object):
     show    = None
     season  = None
     episode = None
@@ -65,8 +65,9 @@ class VideoMetadata:
         self.episode = self.episode.zfill(2)
         return
     
+    formattedName = property(getFormattedName)
 
-class MediaFile:
+class MediaFile(object):
     isTVShow = False
     meta     = VideoMetadata()
     
@@ -129,7 +130,7 @@ class MediaFile:
         if self.meta.show == 'Unknown':
             outputFile = os.path.join(outputPath, self.filename + '.m4v')
         else:
-            outputFilename = self.meta.getFormattedName()
+            outputFilename = self.meta.formattedName
             outputFile = os.path.join(outputPath, outputFilename)
         return outputFile
     
@@ -192,9 +193,11 @@ class MediaFile:
         self.meta.title = 'Unknown'
         printDebug('No regex match!\n')
         return
+
+    outputFile = property(getOutputFile)
     
 
-class HandbrakeHandler:
+class HandbrakeHandler(object):
     def createHBCommand(self, inputFile, outputFile):
         cmd = HandbrakePgm + ' -v0 --preset ' + repr(HandbrakeProfile)
         cmd = cmd + ' -i ' + repr(inputFile)
@@ -218,7 +221,7 @@ def main(f):
         return 1
         
     inputFile  = f
-    outputFile = thisFile.getOutputFile()
+    outputFile = thisFile.outputFile
     
     print inputFile  + "  -->  " + outputFile
     
