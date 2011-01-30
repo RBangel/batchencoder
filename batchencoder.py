@@ -196,7 +196,6 @@ class MediaFile:
 
 class HandbrakeHandler:
     def createHBCommand(self, inputFile, outputFile):
-        
         cmd = HandbrakePgm + ' -v0 --preset ' + repr(HandbrakeProfile)
         cmd = cmd + ' -i ' + repr(inputFile)
         cmd = cmd + ' -o ' + repr(outputFile)
@@ -205,7 +204,8 @@ class HandbrakeHandler:
     def encode(self, inputFile, outputFile):
         cmd = self.createHBCommand(inputFile, outputFile)
         printDebug(cmd)
-        os.system(cmd)
+        if not ReadOnly:
+            os.system(cmd)
 
 
 def main(f):
@@ -222,8 +222,7 @@ def main(f):
     
     print inputFile  + "  -->  " + outputFile
     
-    if not ReadOnly:
-        handbrake.encode(inputFile, outputFile)
+    handbrake.encode(inputFile, outputFile)
 
 def printDebug(outputString):
     if Debug == True:
