@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys
-import os.path
+import os
 import re
 import string
 from getopt import getopt
@@ -123,11 +123,13 @@ class MediaFile:
         self.setCleanFilename()
         self.setFilenameMeta()
         
+        outputPath = os.path.expanduser(CompletedMediaPath)
+        
         if self.meta.show == 'Unknown':
-            outputFile = os.path.join(CompletedMediaPath, self.filename + '.m4v')
+            outputFile = os.path.join(outputPath, self.filename + '.m4v')
         else:
             outputFilename = self.meta.getFormattedName()
-            outputFile = os.path.join(CompletedMediaPath, outputFilename)
+            outputFile = os.path.join(outputPath, outputFilename)
         return outputFile
     
     def setCleanFilename( self ):
@@ -192,24 +194,34 @@ class MediaFile:
     
 
 class HandbrakeHandler:
-    def createHBCommand( self ):
-        return HandbrakePgm
+    def createHBCommand(self, inputFile, outputFile):
+        
+        cmd = HandbrakePgm + ' -v0 --preset ' + repr(HandbrakeProfile)
+        cmd = cmd + ' -i ' + repr(inputFile)
+        cmd = cmd + ' -o ' + repr(outputFile)
+        return cmd
     
+    def encode(self, inputFile, outputFile):
+        cmd = self.createHBCommand(inputFile, outputFile)
+        printDebug(cmd)
+        os.system(cmd)
 
 
-def main( f ):
-    printDebug( '==== ' + f + ' ===\n' )
+def main(f):
+    printDebug('==== ' + f + ' ===\n')
     
-    thisFile = MediaFile( f )
+    thisFile = MediaFile(f)
     
     if thisFile.isValidVideo() == False:
-        printError( 'Skipping.  Not a valid file:  ' + f )
+        printError('Skipping.  Not a valid file:  ' + f)
         return 1
         
     inputFile  = f
     outputFile = thisFile.getOutputFile()
     
     print inputFile  + "  -->  " + outputFile
+    
+    handbrake.encode(inputFile, outputFile)
 
 def printDebug(outputString):
     if Debug == True:
@@ -223,6 +235,7 @@ def printError( outputString ):
     sys.stderr.write( '[E]  ' + outputString + '\n' )
     return
 
+handbrake = HandbrakeHandler()
 
 if __name__ == "__main__":
     options, args = getopt(sys.argv[1:], 'd')
