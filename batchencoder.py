@@ -13,6 +13,7 @@ MediaTypesAllowed   = ['avi', 'mkv']
 ProcessTVShows      = True
 ProcessMovies       = False
 Debug               = False
+ReadOnly            = False
 
 OldMagicWordsList = ['xxx', 'xvidvd', 'xvid', 'x264', 'www', 'ws', 'unrated', 'ts', 
               'telesync', 'telecine', 'tc', 'swedish', 'svcd', 'se', 'screener', 
@@ -221,7 +222,8 @@ def main(f):
     
     print inputFile  + "  -->  " + outputFile
     
-    handbrake.encode(inputFile, outputFile)
+    if not ReadOnly:
+        handbrake.encode(inputFile, outputFile)
 
 def printDebug(outputString):
     if Debug == True:
@@ -238,12 +240,14 @@ def printError( outputString ):
 handbrake = HandbrakeHandler()
 
 if __name__ == "__main__":
-    options, args = getopt(sys.argv[1:], 'd')
+    options, args = getopt(sys.argv[1:], 'd','dry-run')
 
     #Option parsing loop
     for option in options:
         if option[0] == '-d':
             Debug = True
+        if option[0] == '--dry-run':
+            ReadOnly = True
     
     for f in args:
 	    main( f )
