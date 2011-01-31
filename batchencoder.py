@@ -5,6 +5,7 @@ import os
 import re
 import string
 from getopt import getopt
+from thetvdbapi import TheTVDB
 
 CompletedMediaPath  = '~/Media/Encoded'
 HandbrakePgm        = '/usr/local/bin/HandbrakeCLI'
@@ -14,6 +15,8 @@ ProcessTVShows      = True
 ProcessMovies       = False
 Debug               = False
 ReadOnly            = False
+#TVDB with API key
+tvdb                = TheTVDB('281046A688E06370')
 
 OldMagicWordsList = ['xxx', 'xvidvd', 'xvid', 'x264', 'www', 'ws', 'unrated', 'ts', 
               'telesync', 'telecine', 'tc', 'swedish', 'svcd', 'se', 'screener', 
