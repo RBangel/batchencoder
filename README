@@ -1,1 +1,4 @@
 A python script to automate transcoding video files.
+
+This project uses the TVDB API.  Feel free to contribute at
+http://www.thetvdb.com.
